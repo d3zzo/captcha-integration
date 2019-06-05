@@ -13,6 +13,6 @@ namespace captcha_integration.Models
         public string Name { get; set; }
         public int Age { get; set; }
         public string  LastName { get; set; }
-        public bool formValidated { get; set; }
+        public bool displayCaptcha { get; set; }
     }
 }

@@ -58,8 +58,9 @@ namespace captcha_integration.Controllers
         {
             if (!ModelState.IsValid)
             {
-                Response.StatusCode = (int)HttpStatusCode.OK;
+                //Response.StatusCode = (int)HttpStatusCode.BadGateway;
                 return Json(new { Valid = ModelState.IsValid });
+                
                 //return Json(new
                 //{
                 //    Valid = ModelState.IsValid,
@@ -67,37 +68,24 @@ namespace captcha_integration.Controllers
                 //    //StudentsPartial = studentPartialViewHtml
                 //});
             }
-            else if (viewModel.formValidated == true)
+            else //if (viewModel.formValidated == true)
             {
                 var result = _visualCaptcha.ValidateAnswer(Request.Form);
                 var queryParams = new NameValueCollection();
-                if (result == CaptchaState.ValidImage)
+                if (result == CaptchaState.ValidImage || result == CaptchaState.ValidAudio)
                 {
-                    Response.StatusCode = (int)HttpStatusCode.OK;
-                    queryParams.Add("status", "valid image");
+                    return Json(new
+                    {
+                        redirectUrl = Url.Action("Confirmed", "Form"),
+                        isRedirect = true
+                    });
                 }
                 else
                 {
-                    Response.StatusCode = (int)HttpStatusCode.Forbidden;
-                    queryParams.Add("status", "wrong image");
+                    ModelState.AddModelError("Captcha", "Provided captcha is invalid.");
+                    return Json(new { Valid = false, Errors = true, ErrorMsg = "Invalid captcha" });
                 }
-
-                //if (Request.AcceptTypes != null)// && Request.AcceptTypes.Any(x => x.Contains("html")))
-                ////was req.accepts( 'html' ) !== undefined ) 
-                //{
-                //    var querystring = string.Join("&", queryParams.AllKeys.Select(key => string.Format("{0}={1}", HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(queryParams[key]))));
-                //    Response.Redirect("/Przekierowanie?" + querystring);
-                //    Response.End();
-                //}
-                return Json(new
-                {
-                    redirectUrl = Url.Action("Confirmed", "Form"),
-                    isRedirect = true
-                });
             }
-
-            //Response.End();
-            return Json(new { Valid = ModelState.IsValid });
         }
 
         public Dictionary<string, object> GetErrorsFromModelState()

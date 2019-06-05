@@ -1,12 +1,18 @@
 ﻿@{
     ViewBag.Title = "Index";
 }
+
+<style>
+    .input-validation-error {
+            border: 1px solid #ff0000 !important;
+        }
+</style>
 @model captcha_integration.Models.UserViewModel
 <h2>Index</h2>
 @*@using (Html.BeginForm("Try", "Home", FormMethod.Post))*@
 @using (Html.BeginForm("Index", "Form", FormMethod.Post, new { @id = "formToSubmit" }))
 {
-    <input type="hidden" name="formValidated" value="@Model.formValidated.ToString()" />
+    <input type="hidden" name="formValidated" value="@Model.displayCaptcha.ToString()" />
     @*@Html.HiddenFor(x => x.formValidated)*@
     <div class="form-group row">
         @Html.LabelFor(x => x.Name)
@@ -23,11 +29,13 @@
         @Html.TextBoxFor(x => x.Age, new { @class = "form-control" })
         @Html.ValidationMessageFor(x => x.Age)
     </div>
-    if (Model.formValidated == true)
+    if (Model.displayCaptcha == true)
     {
         <div id="captcha"></div>
     }
     <button type="submit" class="btn btn-primary" id="submitBtn">Submit </button>
+
+    @Html.ValidationSummary();
 
 }
 

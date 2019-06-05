@@ -21,7 +21,7 @@ namespace captcha_integration.Controllers
         {
             if (!ModelState.IsValid)
             {
-                viewModel.formValidated = false;
+                viewModel.displayCaptcha = false;
                 return View(viewModel);
 
             }
@@ -30,7 +30,7 @@ namespace captcha_integration.Controllers
             //if (viewModel.formValidated == false)
             //{
 
-            viewModel.formValidated = true;
+            viewModel.displayCaptcha = true;
             return View(viewModel);
             //}
             //    Server.Transfer("/Home/Try",
