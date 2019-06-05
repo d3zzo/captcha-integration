@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Index";
+}
+@model captcha_integration.Models.UserViewModel
+<h2>Index</h2>
+@*@using (Html.BeginForm("Try", "Home", FormMethod.Post))*@
+@using (Html.BeginForm("Index", "Form", FormMethod.Post, new { @id = "formToSubmit" }))
+{
+    <input type="hidden" name="formValidated" value="@Model.formValidated.ToString()" />
+    @*@Html.HiddenFor(x => x.formValidated)*@
+    <div class="form-group row">
+        @Html.LabelFor(x => x.Name)
+        @Html.TextBoxFor(x => x.Name, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.Name)
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(x => x.LastName)
+        @Html.TextBoxFor(x => x.LastName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.LastName)
+    </div>
+    <div class="form-group row">
+        @Html.LabelFor(x => x.Age)
+        @Html.TextBoxFor(x => x.Age, new { @class = "form-control" })
+        @Html.ValidationMessageFor(x => x.Age)
+    </div>
+    if (Model.formValidated == true)
+    {
+        <div id="captcha"></div>
+    }
+    <button type="submit" class="btn btn-primary" id="submitBtn">Submit </button>
+
+}
+

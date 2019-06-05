@@ -1,0 +1,12 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>visualCaptcha Test </h1>
+    @using (Html.BeginForm("Try", "Home"))
+    {
+        <div id="captcha"></div>
+        <button>Submit</button>
+    }
+</div>
