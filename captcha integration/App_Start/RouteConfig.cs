@@ -14,33 +14,11 @@ namespace captcha_integration
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
 
-            routes.Add(
-                 "VisualCaptchaImages",
-                 new Route("Home/Image/{index}",
-                     new RouteValueDictionary(
-                         new
-                         {
-                             controller = "Home",
-                             action = "Image"
-                         }),
-                     new ReadOnlySessionRouteHandler()
-                     )
-                 );
-            routes.MapRoute(
-                "captcha-start",
-                "{controller}/Start/{numberOfImages}",
-                new { Controller = "Home", Action = "Start", numberOfImages = UrlParameter.Optional });
 
-            routes.MapRoute(
-                "captcha-audio",
-                "{controller}/Audio",
-                new { Controller = "Home", Action = "Audio" });
-
-            routes.MapRoute(
-                name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Form", action = "Index", id = UrlParameter.Optional }
-            );
+            routes.MapRoute("Start", "Home/Start/{numberOfImages}", new { controller = "Home", action = "Start", numberOfImages = UrlParameter.Optional });
+            routes.MapRoute("Image", "Home/Image/{imageIndex}", new { controller = "Home", action = "Image", imageIndex = UrlParameter.Optional });
+            routes.MapRoute("Audio", "Home/Audio/{index}", new { controller = "Home", action = "Audio", index = UrlParameter.Optional });
+            routes.MapRoute("Default", "{controller}/{action}/{id}", new { controller = "Home", action = "Index", id = UrlParameter.Optional });
         }
     }
 }

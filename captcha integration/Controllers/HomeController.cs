@@ -6,115 +6,97 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
-using captcha_integration.Core;
 using captcha_integration.Models;
+using VisualCaptcha;
 
 namespace captcha_integration.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly VisualCaptcha _visualCaptcha;
 
-
-        public HomeController() : this(new HttpContextSession())
-        {
-
-        }
-        public HomeController(ISessionProvider sessionProvider)
-        {
-            var mediaPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Content");
-            _visualCaptcha = new VisualCaptcha(sessionProvider, mediaPath);
-        }
+        private const string SessionKey = "visualcaptcha";
+        
         public ActionResult Index()
         {
             return View();
         }
 
-        public JsonResult Start(int noImages = VisualCaptcha.DefaultNumberOfImages)
+        public JsonResult Start(int numberOfImages)
         {
-            _visualCaptcha.Generate(noImages);
-            return Json(_visualCaptcha.Session.FrontendData, JsonRequestBehavior.AllowGet);
+            var captcha = new Captcha(numberOfImages);
+            Session[SessionKey] = captcha;
+
+            var frontEndData = captcha.GetFrontEndData();
+
+            // Client side library requires lowercase property names
+            return Json(new
+            {
+                values = frontEndData.Values,
+                imageName = frontEndData.ImageName,
+                imageFieldName = frontEndData.ImageFieldName,
+                audioFieldName = frontEndData.AudioFieldName
+            }, JsonRequestBehavior.AllowGet);
         }
 
-        public FileStreamResult Image(int index) //, bool isRetina = false) //isRetina should be on querystring.
+        public FileResult Image(int imageIndex, int retina = 0)
         {
-            return new FileStreamResult(_visualCaptcha.StreamImage(index, false), _visualCaptcha.GetImageMimeType(index, false));
-            //return new FileStreamResult(_visualCaptcha.StreamImage(index, isRetina), _visualCaptcha.GetImageMimeType(index, isRetina));
+            var captcha = (Captcha)Session[SessionKey];
+            var content = captcha.GetImage(imageIndex, retina == 1);
+
+            return File(content, "image/png");
         }
 
-        public FileStreamResult Audio(string type = "mp3")
+        public FileResult Audio(string type = "mp3")
         {
-            Response.Cache.SetExpires(DateTime.UtcNow.AddDays(-1));
-            Response.Cache.SetValidUntilExpires(false);
-            Response.Cache.SetRevalidation(HttpCacheRevalidation.AllCaches);
-            Response.Cache.SetCacheability(HttpCacheability.NoCache);
-            Response.Cache.SetNoStore();
+            var captcha = (Captcha)Session[SessionKey];
+            var content = captcha.GetAudio(type);
 
-            return new FileStreamResult(_visualCaptcha.StreamAudio(type), _visualCaptcha.GetAudioMimeType(type));
+            var contentType = type == "mp3" ? "audio/mpeg" : "audio/ogg";
+            return File(content, contentType);
         }
 
         [HttpPost]
-        public JsonResult Try(UserViewModel viewModel)
+        public JsonResult Try(string captcha)
         {
-            if (!ModelState.IsValid)
-            {
-                //Response.StatusCode = (int)HttpStatusCode.BadGateway;
-                return Json(new { Valid = ModelState.IsValid });
+            var captcha2 = (Captcha)Session[SessionKey];
+            return Json(new { Valid = false });
+        }
+
+        //[HttpPost]
+        //public JsonResult Try(UserViewModel viewModel)
+        //{
+            
+        //    if (!ModelState.IsValid)
+        //    {
+        //        //Response.StatusCode = (int)HttpStatusCode.BadGateway;
+        //        return Json(new { Valid = ModelState.IsValid });
                 
-                //return Json(new
-                //{
-                //    Valid = ModelState.IsValid,
-                //    Errors = GetErrorsFromModelState(),
-                //    //StudentsPartial = studentPartialViewHtml
-                //});
-            }
-            else //if (viewModel.formValidated == true)
-            {
-                var result = _visualCaptcha.ValidateAnswer(Request.Form);
-                var queryParams = new NameValueCollection();
-                if (result == CaptchaState.ValidImage || result == CaptchaState.ValidAudio)
-                {
-                    return Json(new
-                    {
-                        redirectUrl = Url.Action("Confirmed", "Form"),
-                        isRedirect = true
-                    });
-                }
-                else
-                {
-                    ModelState.AddModelError("Captcha", "Provided captcha is invalid.");
-                    return Json(new { Valid = false, Errors = true, ErrorMsg = "Invalid captcha" });
-                }
-            }
-        }
-
-        public Dictionary<string, object> GetErrorsFromModelState()
-        {
-            var errors = new Dictionary<string, object>();
-            foreach (var key in ModelState.Keys)
-            {
-                // Only send the errors to the client.
-                if (ModelState[key].Errors.Count > 0)
-                {
-                    errors[key] = ModelState[key].Errors;
-                }
-            }
-
-            return errors;
-        }
+        //        //return Json(new
+        //        //{
+        //        //    Valid = ModelState.IsValid,
+        //        //    Errors = GetErrorsFromModelState(),
+        //        //    //StudentsPartial = studentPartialViewHtml
+        //        //});
+        //    }
+        //    else //if (viewModel.formValidated == true)
+        //    {
+        //        var result = _visualCaptcha.ValidateAnswer(Request.Form);
+        //        var queryParams = new NameValueCollection();
+        //        if (result == CaptchaState.ValidImage || result == CaptchaState.ValidAudio)
+        //        {
+        //            return Json(new
+        //            {
+        //                redirectUrl = Url.Action("Confirmed", "Form"),
+        //                isRedirect = true
+        //            });
+        //        }
+        //        else
+        //        {
+        //            ModelState.AddModelError("Captcha", "Provided captcha is invalid.");
+        //            return Json(new { Valid = false, Errors = true, ErrorMsg = "Invalid captcha" });
+        //        }
+        //    }
+        //}
     }
-
-
-    public class HttpContextSession : ISessionProvider
-    {
-        public VisualCaptchaSession GetSession(string key)
-        {
-            return (VisualCaptchaSession)HttpContext.Current.Session[key];
-        }
-
-        public void SetSession(string key, VisualCaptchaSession value)
-        {
-            HttpContext.Current.Session[key] = value;
-        }
-    }
+    
 }

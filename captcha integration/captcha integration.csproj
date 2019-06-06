@@ -317,9 +317,9 @@
     <Content Include="Scripts\jquery-3.3.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\captchacore\captchacore.csproj">
-      <Project>{2e073406-f381-412e-a4c8-c5471da3038c}</Project>
-      <Name>captchacore</Name>
+    <ProjectReference Include="..\VisualCaptcha\VisualCaptcha.csproj">
+      <Project>{785bbf88-5123-459b-8efb-75d876a120e9}</Project>
+      <Name>VisualCaptcha</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

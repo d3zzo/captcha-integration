@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.28307.168
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "captcha integration", "captcha integration\captcha integration.csproj", "{62DC2661-3017-4368-8FBA-AD1C4AB47C70}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "captchacore", "captchacore\captchacore.csproj", "{2E073406-F381-412E-A4C8-C5471DA3038C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualCaptcha", "VisualCaptcha\VisualCaptcha.csproj", "{785BBF88-5123-459B-8EFB-75D876A120E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{62DC2661-3017-4368-8FBA-AD1C4AB47C70}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62DC2661-3017-4368-8FBA-AD1C4AB47C70}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62DC2661-3017-4368-8FBA-AD1C4AB47C70}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2E073406-F381-412E-A4C8-C5471DA3038C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2E073406-F381-412E-A4C8-C5471DA3038C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2E073406-F381-412E-A4C8-C5471DA3038C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2E073406-F381-412E-A4C8-C5471DA3038C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{785BBF88-5123-459B-8EFB-75D876A120E9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{785BBF88-5123-459B-8EFB-75D876A120E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{785BBF88-5123-459B-8EFB-75D876A120E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{785BBF88-5123-459B-8EFB-75D876A120E9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
