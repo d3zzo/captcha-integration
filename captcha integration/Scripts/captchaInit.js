@@ -1,45 +1,19 @@
 ﻿$(function () {
-    //var el = $('#captcha').visualCaptcha({
-    //    imgPath: '/Content/img/',
-    //    captcha: {
-    //        numberOfImages: 5,
-    //        routes: { start: "/Home/Start/", image: "/Home/Image/", audio: "/Home/Audio/" },
-    //        callbacks: {
-    //            loaded: function (captcha) {
-    //                console.log('I am loaded.', captcha);
-    //                captchaSubmit(captcha);
-    //            }
-    //        }
-    //    },
-    //});
 
     function loadCaptcha() {
-        $('#captcha').visualCaptcha({
+        return $('#captcha').visualCaptcha({
             imgPath: '/Content/img/',
             captcha: {
                 numberOfImages: 5,
                 routes: { start: "/Home/Start/", image: "/Home/Image/", audio: "/Home/Audio/" },
-                callbacks: {
-                    loaded: function (captcha) {
-                        console.log('I am loaded.', captcha);
-                        captchaSubmit(captcha);
-                    }
-                }
             }
-
-        })
+        }).data('captcha');
     }
-
-    loadCaptcha();
-    // use next code for getting captcha object
-    //var captcha = el.data('captcha');
-
 
     function captchaSubmit(captcha) {
         //$('#submitBtn').click(function () {
 
         $("#formToSubmit").submit(function (event) {
-            //event.preventDefault(); //prevent default action 
             var test = captcha.getCaptchaData();
             if (test.valid) {
                 var request_method = $(this).attr("method"); //get form GET/POST method
@@ -54,14 +28,18 @@
                             window.location.href = data.redirectUrl;
                         }
                         if (data.Valid != null && data.Errors != null && data.Valid == false && data.Errors == true) {
+                            captcha.refresh()
+                            event.preventDefault();
                             //reloadCaptcha()
-                            //$("#captcha").addClass('input-validation-error');
+                            $("#captcha").addClass('input-validation-error');
                         }
                         else {
                             event.preventDefault();
                         }
                     },
                 });
+
+
 
                 //});
 
@@ -114,4 +92,7 @@
             }
         });
     }
+
+    captchaSubmit(loadCaptcha());
+
 });

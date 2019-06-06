@@ -87,24 +87,8 @@ namespace captcha_integration.Controllers
                 }
             }
         }
-
-        public Dictionary<string, object> GetErrorsFromModelState()
-        {
-            var errors = new Dictionary<string, object>();
-            foreach (var key in ModelState.Keys)
-            {
-                // Only send the errors to the client.
-                if (ModelState[key].Errors.Count > 0)
-                {
-                    errors[key] = ModelState[key].Errors;
-                }
-            }
-
-            return errors;
-        }
     }
-
-
+    
     public class HttpContextSession : ISessionProvider
     {
         public VisualCaptchaSession GetSession(string key)
